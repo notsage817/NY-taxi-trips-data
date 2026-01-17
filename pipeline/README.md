@@ -1,11 +1,12 @@
 This is a basic project that read New York taxi trips data and load them into PostgreSQL.
 
 #### Create an virtual environment using uv:
+```bash
+uv init --python=3.3
+```
 
-```uv init --python=3.3
-```
 #### Containizer the pipeline with virtual environment setup
-```
+```bash
 # Start with slim Python 3.13 image
 FROM python:3.13.10-slim
 
@@ -32,7 +33,7 @@ ENTRYPOINT ["python", "pipeline.py"]
 
 #### Running postgreSQL in a container
 A named volume is created for database. Volume is managed by docker and is persistant regardless of the container.
-```
+```bash
 docker run -it --rm \
   -e POSTGRES_USER={username} \
   -e POSTGRES_PASSWORD={pw} \
@@ -44,7 +45,7 @@ docker run -it --rm \
 Or it is known to have a mount from local directory to a docker host, which is not recommended in data engineering where large tables are transformed but welcomed in common DS/ML projects.
 
 #### Run SQL database in terminal
-```
+```bash
 uv run pgcli -h localhost -p 5432 -u root -d ny_taxi
 ```
 
@@ -54,7 +55,7 @@ Click is a useful package for read input.
 
 For CSV file, running the command below with input will load data thru SQLalchemy:
 
-```
+```bash
 uv run python ingest_data_pd.py \
   --pg-user=root \
   --pg-pass=root \
@@ -69,7 +70,7 @@ uv run python ingest_data_pd.py \
 
 For parquet file, running command below with input will load data thru a 10x faster engine 'adbc':
 
-```
+```bash
 uv run python ingest_data_pq.py \
   --pg-user=root \
   --pg-pass=root \
@@ -86,7 +87,7 @@ uv run python ingest_data_pq.py \
 
 #### Manage Database with pgAdmin
 Create a new container for pgAdmin and a network for pgAdmin to get access to postgreSQL database.
-```
+```bash
 docker run -it \
   -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
   -e PGADMIN_DEFAULT_PASSWORD="root" \
@@ -99,11 +100,11 @@ docker run -it \
 
 #### Dockenize the pipeline
 See dockerfile.
-```
+```bash
 docker build -t taxi_ingest:v001 .
 ```
 
-```
+```bash
 docker run -it \
   --network=pg-network \
   taxi_ingest:v001 \
