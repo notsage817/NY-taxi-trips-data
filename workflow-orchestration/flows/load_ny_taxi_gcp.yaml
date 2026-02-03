@@ -1,0 +1,60 @@
+id: load_ny_taxi_gcp
+namespace: jocelynh
+description: |
+  The CSV Data used in the course: https://github.com/DataTalksClub/nyc-tlc-data/releases
+
+inputs:
+  - id: taxi
+    type: MULTISELECT
+    displayName: Select taxi type
+    values: [yellow, green]
+    defaults: [green]
+
+  - id: year
+    type: MULTISELECT
+    displayName: Select year
+    values: ["2019", "2020","2021"]
+    defaults: ["2019"]
+    allowCustomValue: true # allows you to type 2021 from the UI for the homework 🤗
+
+  - id: month
+    type: MULTISELECT
+    displayName: Select month
+    values: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+    defaults: ["01"]
+
+
+tasks:
+  - id: taxi_loop
+    type: io.kestra.plugin.core.flow.ForEach
+    values: "{{ inputs.taxi }}"
+    tasks:
+      - id: year_loop
+        type: io.kestra.plugin.core.flow.ForEach
+        values: "{{ inputs.year }}"
+        tasks:
+          - id: month_loop
+            type: io.kestra.plugin.core.flow.ForEach
+            values: "{{ inputs.month }}"
+            tasks:
+              - id: subflow_logic
+                type: io.kestra.plugin.core.flow.Subflow
+                flowId: 08_gcp_taxi
+                namespace: jocelynh
+                inputs:
+                  taxi: "{{ parents[1].taskrun.value }}"
+                  year: "{{ parents[0].taskrun.value }}"
+                  month: "{{ taskrun.value }}"
+                wait: true
+                transmitFailed: true
+
+  - id: purge_files
+    type: io.kestra.plugin.core.storage.PurgeCurrentExecutionFiles
+
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      serviceAccount: "{{kv('GCP_CREDS')}}"
+      projectId: "{{kv('GCP_PROJECT_ID')}}"
+      location: "{{kv('GCP_LOCATION')}}"
+      bucket: "{{kv('GCP_BUCKET_NAME')}}"
