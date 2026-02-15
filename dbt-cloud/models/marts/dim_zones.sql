@@ -3,4 +3,4 @@ select
     borough,
     zone,
     service_zone
-from {{ref("taxi_zoon_lookup")}}
+from {{ref("taxi_zone_lookup")}}
