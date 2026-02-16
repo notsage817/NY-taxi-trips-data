@@ -3,8 +3,7 @@
         materialized='incremental',
         unique_key='trip_id',
         incremental_strategy='merge',
-        on_schema_change='append_new_columns',
-        maximum_bytes_billed = '30000000000'
+        on_schema_change='append_new_columns'
     )
 }}
 select t.trip_id,
