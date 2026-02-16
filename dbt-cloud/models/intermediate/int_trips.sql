@@ -8,7 +8,9 @@ payment_type as (
 
 enriched as (
     select 
-
+        -- Generate unique trip identifier (surrogate key pattern)
+        {{ dbt_utils.generate_surrogate_key(
+            ['u.vendor_id', 'u.pickup_location_id','u.dropoff_location_id', 'u.dropoff_datetime', 'u.pickup_datetime', 'u.service_type']) }} as trip_id,
         --Identifiers
         u.vendor_id,
         u.service_type,
