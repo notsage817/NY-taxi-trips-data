@@ -14,6 +14,11 @@ Run docker with gcp credential in the codespace env
 ```bash
 docker run -e GCP_CREDENTIAL fhv-ingest
 ```
+```docker build -t fhv-ingest . ```
+
+Run docker with gcp credential in the codespace env
+
+```docker run -e GCP_CREDENTIAL fhv-ingest```
 
 (check credential name `echo $GCP_CREDENTIAL`)
 
@@ -28,4 +33,3 @@ OPTIONS (
   skip_leading_rows = 1
 );
 ```
-
