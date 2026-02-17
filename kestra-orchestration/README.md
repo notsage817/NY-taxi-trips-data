@@ -1,5 +1,8 @@
-In this project, I containerized the orchestration process for an independent architecture
+## Extract and Load data into GCP/local via kestra
+Extract csv files and load into GCP bucket with defined schema.
 
-The container is connected to the network in pipeline file and is able to run queries in Kestra flow, see flows/verify_ny_taxi_connection.yaml
+### Orchestration
+- Config gcp credential and verify connections
+- Call `flows/08_gcp_taxi.yaml` for each loop of multi-selected inputs
 
-In the flows/03_getting_started_data_pipeline, add another columns when executing the flow and output the average price for each category instead of brand
+

@@ -2,37 +2,13 @@ This is a basic project that read New York taxi trips data and load them into Po
 
 #### Create an virtual environment using uv:
 ```bash
-uv init --python=3.3
+uv init --python=3.13
 ```
 
 #### Containizer the pipeline with virtual environment setup
-```dockerfile
-# Start with slim Python 3.13 image
-FROM python:3.13.10-slim
+See dockerfile
 
-# Copy uv binary from official uv image (multi-stage build pattern)
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
-
-# Set working directory
-WORKDIR /app
-
-# Add virtual environment to PATH so we can use installed packages
-ENV PATH="/app/.venv/bin:$PATH"
-
-# Copy dependency files first (better layer caching)
-COPY "pyproject.toml" "uv.lock" ".python-version" ./
-# Install dependencies from lock file (ensures reproducible builds)
-RUN uv sync --locked
-
-# Copy application code
-COPY pipeline.py pipeline.py
-
-# Set entry point
-ENTRYPOINT ["python", "pipeline.py"]
-```
-
-#### Running postgreSQL in a container
-A named volume is created for database. Volume is managed by docker and is persistant regardless of the container.
+#### Running postgreSQL in a container with mounted Volume
 ```bash
 docker run -it --rm \
   -e POSTGRES_USER={username} \
@@ -44,15 +20,12 @@ docker run -it --rm \
   ```
 Or it is known to have a mount from local directory to a docker host, which is not recommended in data engineering where large tables are transformed but welcomed in common DS/ML projects.
 
-#### Run SQL database in terminal
+#### Run postgreSQL DB in terminal
 ```bash
 uv run pgcli -h localhost -p 5432 -u root -d ny_taxi
 ```
 
 #### Load and ingest data from variable sources
-Pipelines in scripts with input to run in terminal.
-Click is a useful package for read input.
-
 For CSV file, running the command below with input will load data thru SQLalchemy:
 
 ```bash
@@ -68,7 +41,7 @@ uv run python ingest_data_pd.py \
   --chunksize=100000
 ```
 
-For parquet file, running command below with input will load data thru a 10x faster engine 'adbc':
+For parquet file, running command below with input will load data via a 10x faster engine 'adbc' in psycopg2:
 
 ```bash
 uv run python ingest_data_pq.py \
@@ -100,7 +73,6 @@ docker run -it \
 ```
 
 #### Dockenize the pipeline
-See dockerfile.
 ```bash
 docker build -t taxi_ingest:v001 .
 ```
@@ -121,8 +93,6 @@ docker run -it \
 
 
 #### Upgrade to docker compose
-Docker-compose build containers needed in the whole project in one line and create default volume and network for the project. 
-See the docker-compose.yaml file for further details.
 
 ```
 docker run -it \
