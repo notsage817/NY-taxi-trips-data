@@ -13,7 +13,7 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen
 ENV PATH="/app/.venv/bin:$PATH"
 # Copy the script
-COPY ingest.py .
+COPY ingest_fhv.py .
 
 # default entrypoint
-ENTRYPOINT ["python", "ingest.py"]
+ENTRYPOINT ["python", "ingest_fhv.py"]
