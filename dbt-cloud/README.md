@@ -1,15 +1,14 @@
-Welcome to your new dbt project!
+## Analytics Engineering in dbt cloud
 
-### Using the starter project
+### Staging models
+- Stage Green, yellow and fhv trip data into staging models filtering out null IDs
 
-Try running the following commands:
-- dbt run
-- dbt test
+### Intermediate
+- Merge Green and Yellow trip data into one table
+- Join categorical values such as payment_type
+- Deduplicate records and add unique key
 
-
-### Resources:
-- Learn more about dbt [in the docs](https://docs.getdbt.com/docs/introduction)
-- Check out [Discourse](https://discourse.getdbt.com/) for commonly asked questions and answers
-- Join the [dbt community](https://getdbt.com/community) to learn from other analytics engineers
-- Find [dbt events](https://events.getdbt.com) near you
-- Check out [the blog](https://blog.getdbt.com/) for the latest news on dbt's development and best practices
+### Marts
+- Create dimension tables for taxi zones and payment types from dbt seeds
+- Build fact table from intermediate models
+- Build revenue reporting tables for different zones on monthly basis
