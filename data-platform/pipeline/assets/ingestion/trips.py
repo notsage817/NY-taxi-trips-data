@@ -27,8 +27,8 @@ from datetime import datetime, timezone
 from typing import List, Dict, Tuple
 from dateutil.relativedelta import relativedelta
 
-BASEURL = "https://d37ci6vzp7h7m.cloudfront.net/trip-data"
-
+BASEURL = "https://d37ci6vzurychx.cloudfront.net/trip-data"
+# https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_2021-02.parquet
 def generate_months_toingest(start_date: str, end_date: str) -> List[Tuple[int, int]]:
     """
     Generate list of (year, month) tuples between start_date and end_date.

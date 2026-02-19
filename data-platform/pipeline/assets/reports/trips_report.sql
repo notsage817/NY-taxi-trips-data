@@ -17,7 +17,8 @@ depends:
 # For reports, `time_interval` is a good choice to rebuild only the relevant time window.
 # Important: Use the same `incremental_key` as staging (e.g., pickup_datetime) for consistency.
 materialization:
-  type: table
+  type: view
+  suggested_trategy: refresh
   # suggested strategy: time_interval
   #strategy: TODO
   # TODO: set to your report's date column
@@ -27,20 +28,20 @@ materialization:
 
 # TODO: Define report columns + primary key(s) at your chosen level of aggregation.
 columns:
-  - name: TODO_dim
-    type: TODO
-    description: TODO
-    primary_key: true
-  - name: TODO_date
+  - name: pickup_date
     type: DATE
-    description: TODO
+    description: The date of the pickup
     primary_key: true
-  - name: TODO_metric
+  - name: trip_count
     type: BIGINT
-    description: TODO
+    description: The number of trips on a given date
     checks:
       - name: non_negative
-
+  - name: total_revenue
+    type: NUMERIC
+    description: The total revenue from trips on a given date
+    checks:
+      - name: non_negative
 @bruin */
 
 -- Purpose of reports:
@@ -49,7 +50,10 @@ columns:
 -- - Filter using `{{ start_datetime }}` / `{{ end_datetime }}` for incremental runs
 -- - GROUP BY your dimension + date columns
 
-SELECT * -- TODO: replace with your aggregation logic
+SELECT  date_trunc('day', pickup_datetime) as pickup_date, 
+        count(*) as trip_count,
+        sum(total_amount) as total_revenue
 FROM staging.trips
 WHERE pickup_datetime >= '{{ start_datetime }}'
   AND pickup_datetime < '{{ end_datetime }}'
+GROUP BY 1
