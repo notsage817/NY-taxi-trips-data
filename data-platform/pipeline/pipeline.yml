@@ -1,0 +1,31 @@
+name: ny-taxi-tripdata-pipeline
+
+# Pipeline schedule
+schedule: "daily"
+
+# The date to start when refreshing assets
+start_date: "2021-01-01"
+
+# Configure default connections for local dev (or gcp)
+default_connections:
+  duckdb: "duckdb-default"
+  # google_cloud_storage: "gcs-bruin"
+
+# Define pipeline variables using JSON Schema and defaults.
+variables:
+  # Define `taxi_types` as an array of strings to choose from
+  taxi_types:
+    type: array
+    items:
+      type: string  # should be: string
+    default: ["yellow", "green"]  
+  year:
+    type: array
+    items:
+      type: integer
+    default: [2021, 2022, 2023, 2024]
+  month:
+    type: array
+    items:
+      type: integer
+    default: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
