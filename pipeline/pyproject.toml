@@ -11,6 +11,7 @@ dependencies = [
     "connectorx>=0.4.4",
     "fsspec>=2026.1.0",
     "pandas>=2.3.3",
+    "pgcli>=4.4.0",
     "polars>=1.37.1",
     "psycopg2-binary>=2.9.11",
     "pyarrow>=22.0.0",
