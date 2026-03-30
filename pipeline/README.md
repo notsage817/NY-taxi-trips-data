@@ -107,3 +107,76 @@ docker run -it \
     --year=2025 \
     --month=10
 ```
+
+---
+
+## Project Overview
+
+### About the Data
+
+This project ingests the **NYC Taxi and Limousine Commission (TLC) Trip Record** dataset — one of the most well-known public datasets in data engineering. Data is published monthly by the TLC and covers yellow cab, green cab, and for-hire vehicle trips across New York City.
+
+Data files are hosted at:
+```
+https://d37ci6vzurychx.cloudfront.net/trip-data/
+```
+Files follow the naming convention `yellow_tripdata_YYYY-MM.parquet` and `green_tripdata_YYYY-MM.parquet`.
+
+Key fields in the dataset include:
+
+| Field | Description |
+|---|---|
+| `VendorID` | Technology provider (1 = Creative Mobile, 2 = VeriFone) |
+| `tpep_pickup_datetime` | Pickup timestamp |
+| `tpep_dropoff_datetime` | Dropoff timestamp |
+| `passenger_count` | Number of passengers |
+| `trip_distance` | Trip distance in miles |
+| `PULocationID` / `DOLocationID` | Pickup / dropoff taxi zone IDs |
+| `payment_type` | Payment method (1 = Credit card, 2 = Cash, etc.) |
+| `fare_amount` | Metered fare |
+| `tip_amount` | Tip amount |
+| `total_amount` | Total charged to passenger |
+
+### Ingestion Architecture
+
+Two ingestion paths are provided:
+
+```
+CSV source
+  └─► ingest_data_pd.py  ─► Pandas DataFrame (chunked) ─► SQLAlchemy engine ─► PostgreSQL
+
+Parquet source
+  └─► ingest_data_pq.py  ─► Polars DataFrame (full load) ─► ADBC engine ─► PostgreSQL
+                                                                 (≈10x faster than SQLAlchemy)
+```
+
+- **`ingest_data_pd.py`** uses `pandas` + `SQLAlchemy` and reads data in chunks — suitable for CSV files and compatible with most SQL backends.
+- **`ingest_data_pq.py`** uses `polars` + `adbc-driver-postgresql` for direct, high-performance bulk loading of Parquet files. It also runs a `VACUUM ANALYZE` after each load to keep the table statistics up to date.
+
+### Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Language | Python 3.13 |
+| Dependency management | [uv](https://github.com/astral-sh/uv) |
+| Dataframe (fast path) | Polars |
+| Dataframe (compat path) | Pandas |
+| DB write engine (fast) | ADBC (`adbc-driver-postgresql`) |
+| DB write engine (compat) | SQLAlchemy |
+| Database driver | psycopg2 |
+| Database | PostgreSQL 18 |
+| DB admin UI | pgAdmin 4 |
+| Containerisation | Docker + Docker Compose |
+| CLI parsing | Click |
+
+### Project Structure
+
+```
+pipeline/
+├── ingest_data_pd.py     # CSV → Pandas → SQLAlchemy → PostgreSQL
+├── ingest_data_pq.py     # Parquet → Polars → ADBC → PostgreSQL
+├── Dockerfile            # Containerised pipeline image
+├── docker-compose.yaml   # PostgreSQL + pgAdmin services
+├── pyproject.toml        # Python dependencies (uv)
+└── README.md             # This file
+```
