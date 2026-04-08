@@ -2,9 +2,7 @@
 
 ### About the Data
 
-This project ingests the [**NYC Taxi and Limousine Commission (TLC) Trip Record**](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page)dataset — one of the most well-known public datasets in data engineering. Data is published monthly by the TLC and covers yellow cab, green cab, and for-hire vehicle trips across New York City.
-
-Files follow the naming convention `yellow_tripdata_YYYY-MM.parquet` and `green_tripdata_YYYY-MM.parquet`.
+This project ingests the [**NYC Taxi and Limousine Commission (TLC) Trip Record**](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) dataset — one of the most well-known public datasets in data engineering. The taxi data is published monthly by the TLC and covers yellow cab, green cab, and for-hire vehicle trips across New York City.
 
 Key fields in the dataset include:
 
@@ -28,8 +26,8 @@ Two ingestion paths are provided:
 ```
 CSV files
   └─► ingest_data_pd.py  ─► Pandas DataFrame (chunked) ─► SQLAlchemy engine ─► PostgreSQL
-```
-```bash
+
+bash
 uv run python ingest_data_pd.py \
   --pg-user=root \
   --pg-pass=root \
