@@ -1,6 +1,6 @@
 # NY Taxi Trips — Batch Processing
 
-NYC's Taxi & Limousine Commission publishes monthly trip records for every yellow cab ride in the city. This project takes those raw files, cleans and enriches them locally, then hands them off to a cloud pipeline that loads everything into BigQuery — where analysts can query millions of trips, track revenue trends, and explore demand by zone.
+NYC's Taxi & Limousine Commission publishes monthly trip records for every yellow cab ride in the city. This project uses spark to batch-processed raw files and save them to BigQuery for further analytics.
 
 ---
 
